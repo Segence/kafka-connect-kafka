@@ -17,5 +17,10 @@ tasks.register('integrationTest', Test) {
   classpath = sourceSets.integrationTest.runtimeClasspath
   mustRunAfter test
 
-  useJUnitPlatform()
+  useJUnitPlatform {
+      includeEngines("scalatest")
+      testLogging {
+          events("passed", "skipped", "failed")
+      }
+  }
 }
