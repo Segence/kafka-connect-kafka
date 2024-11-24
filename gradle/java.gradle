@@ -1,0 +1,64 @@
+apply plugin: 'java'
+//apply plugin: 'com.github.spotbugs'
+apply plugin: 'jacoco'
+//apply plugin: 'checkstyle'
+
+dependencies {
+  testImplementation (
+    "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+    "org.junit.jupiter:junit-jupiter:${junitVersion}",
+    "org.hamcrest:hamcrest-all:${hamcrestVersion}",
+    "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
+    "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+  )
+  testImplementation ("org.mockito:mockito-core:${mockitoVersion}") {
+    exclude group: 'org.hamcrest'
+  }
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+
+  withJavadocJar()
+  withSourcesJar()
+}
+
+test {
+  useJUnitPlatform()
+}
+
+jacoco {
+  toolVersion = "${jacocoVersion}"
+}
+
+jacocoTestReport {
+  reports {
+    xml.required = true
+  }
+}
+
+//checkstyle {
+//  configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+//  toolVersion = '10.17.0'
+//}
+//
+//spotbugs {
+//  toolVersion = "${spotbugsVersion}"
+//  excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
+//}
+
+jacocoTestReport.mustRunAfter test
+
+tasks.register('unitTest') {
+  dependsOn('test')
+  dependsOn('jacocoTestReport')
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+}

@@ -1,0 +1,21 @@
+sourceSets {
+  integrationTest {
+    java {
+      srcDir file('src/integrationTest/java')
+    }
+    resources {
+      srcDir file('src/integrationTest/resources')
+    }
+    compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+    runtimeClasspath += output + compileClasspath
+  }
+}
+
+tasks.register('integrationTest', Test) {
+  description = 'Runs the integration tests.'
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  mustRunAfter test
+
+  useJUnitPlatform()
+}

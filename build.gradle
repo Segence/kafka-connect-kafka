@@ -1,0 +1,106 @@
+plugins {
+//  id 'com.github.spotbugs' version '6.0.18' apply false
+//  id 'checkstyle'
+//  id 'org.owasp.dependencycheck' version '11.1.0'
+  id 'com.adtran.scala-multiversion-plugin' version '2.1.0' apply false
+  id 'com.github.maiflai.scalatest' version '0.32' apply false
+  id 'org.scoverage' version '8.1' apply false
+  id 'com.github.alisiikh.scalastyle' version '3.5.0' apply false
+  id 'com.gradleup.shadow' version '8.3.5'
+  id 'maven-publish'
+}
+
+//apply plugin: 'java'
+//apply plugin: 'maven-publish'
+//  apply plugin: 'org.owasp.dependencycheck'
+
+group = 'com.segence.kafka.connect'
+
+repositories {
+  mavenLocal()
+  maven {
+    url = "https://repo.maven.apache.org/maven2"
+  }
+  maven {
+    url = "https://repo1.maven.org/maven2"
+  }
+  maven {
+    name 'Confluent'
+    url 'https://packages.confluent.io/maven'
+  }
+}
+
+tasks.withType(Copy).all {
+  duplicatesStrategy 'exclude'
+}
+
+//  dependencyCheck {
+//    nvd {
+//      apiKey = System.getenv("NVD_API_KEY")
+//    }
+//  }
+
+// publishing {
+//   repositories {
+//     maven {
+//       url = project.hasProperty('publishRepository') && publishRepository == 'release' ? publishReleaseRepositoryUrl : publishSnapshotRepositoryUrl
+//       credentials {
+//         username System.getenv("AZURE_DEVOPS_FEED_USER")
+//         password System.getenv("AZURE_DEVOPS_FEED_PASSWORD")
+//       }
+//     }
+//   }
+// }
+
+
+//apply from: './gradle/scala.gradle'
+
+apply from: 'gradle/java.gradle'
+apply from: 'gradle/it.gradle'
+
+apply plugin: 'scala'
+apply plugin: 'com.adtran.scala-multiversion-plugin'
+// apply plugin: 'com.github.maiflai.scalatest'
+// apply plugin: 'com.github.alisiikh.scalastyle'
+
+dependencies {
+  testImplementation (
+    "org.scala-lang:scala-library:%scala-version%",
+    "org.scalatest:scalatest_%%:${scalaTestVersion}",
+    "org.scalatestplus:junit-5-10_%%:3.2.19.1",
+    // "org.mockito:mockito-core:${mockitoVersion}",
+    // "org.scalatestplus:mockito-5-12_%%:${scalaTestPlusMockitoVersion}",
+    "com.vladsch.flexmark:flexmark-profile-pegdown:${flexmarkVersion}"
+  )
+}
+
+
+
+// scalastyle {
+//   failOnWarning = true
+//   config = file("${project.rootDir}/config/scalastyle/scalastyle.xml")
+// }
+
+// check.dependsOn('scalastyleCheck')
+
+
+
+
+dependencies {
+  compileOnly (
+    "org.apache.kafka:connect-runtime:${kafkaVersion}",
+    "io.confluent:kafka-schema-registry-client:${confluentVersion}",
+    "io.confluent:kafka-avro-serializer:${confluentVersion}",
+    "org.slf4j:slf4j-api:${slf4jVersion}",
+  )
+  testImplementation (
+    "org.apache.kafka:connect-runtime:${kafkaVersion}",
+    "io.confluent:kafka-schema-registry-client:${confluentVersion}",
+    "io.confluent:kafka-avro-serializer:${confluentVersion}",
+    "org.slf4j:slf4j-api:${slf4jVersion}",
+    "org.slf4j:slf4j-reload4j:${slf4jVersion}",
+   "io.github.embeddedkafka:embedded-kafka-connect_%%:${embeddedKafkaVersion}",
+   "io.github.embeddedkafka:embedded-kafka-schema-registry_%%:${confluentVersion}",
+   "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
+  )
+}

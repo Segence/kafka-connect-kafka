@@ -1,0 +1,25 @@
+{
+  "name": "test1",
+  "config": {
+    "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
+    "input.data.format": "JSON",
+    "input.key.format": "STRING",
+    "topics": "upstream_non_txn",
+    "tasks.max": "1",
+    "batch.max.rows": 1,
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "bootstrap.servers": "localhost:6001",
+    "schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schemas.enable": false,
+
+    "key.serializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "value.serializer": "org.apache.kafka.common.serialization.StringSerializer",
+
+    "sink.topic": "downstream_non_txn",
+    "sink.key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "sink.value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "sink.bootstrap.servers": "localhost:6001",
+    "sink.client.id": "asd987s9f"
+  }
+}

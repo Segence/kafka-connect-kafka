@@ -1,0 +1,22 @@
+apply plugin: 'scala'
+apply plugin: 'com.adtran.scala-multiversion-plugin'
+apply plugin: 'com.github.maiflai.scalatest'
+apply plugin: 'com.github.alisiikh.scalastyle'
+
+dependencies {
+  testImplementation (
+    "org.scala-lang:scala-library:%scala-version%",
+    "org.scalatest:scalatest_%%:${scalaTestVersion}",
+    "org.mockito:mockito-core:${mockitoVersion}",
+    "org.scalatestplus:mockito-5-12_%%:${scalaTestPlusMockitoVersion}",
+    "com.vladsch.flexmark:flexmark-profile-pegdown:${flexmarkVersion}"
+  )
+}
+
+scalastyle {
+  failOnWarning = true
+  config = file("${project.rootDir}/config/scalastyle/scalastyle.xml")
+}
+
+check.dependsOn('scalastyleCheck')
+
