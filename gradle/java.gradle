@@ -3,18 +3,6 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 //apply plugin: 'checkstyle'
 
-dependencies {
-  testImplementation (
-    "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
-    "org.junit.jupiter:junit-jupiter:${junitVersion}",
-    "org.hamcrest:hamcrest-all:${hamcrestVersion}",
-    "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
-    "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-  )
-  testImplementation ("org.mockito:mockito-core:${mockitoVersion}") {
-    exclude group: 'org.hamcrest'
-  }
-}
 
 java {
   sourceCompatibility = JavaVersion.VERSION_17

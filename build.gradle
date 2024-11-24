@@ -10,7 +10,6 @@ plugins {
   id 'maven-publish'
 }
 
-//apply plugin: 'java'
 //apply plugin: 'maven-publish'
 //  apply plugin: 'org.owasp.dependencycheck'
 
@@ -53,38 +52,12 @@ tasks.withType(Copy).all {
 // }
 
 
-//apply from: './gradle/scala.gradle'
 
 apply from: 'gradle/java.gradle'
 apply from: 'gradle/it.gradle'
 
 apply plugin: 'scala'
 apply plugin: 'com.adtran.scala-multiversion-plugin'
-// apply plugin: 'com.github.maiflai.scalatest'
-// apply plugin: 'com.github.alisiikh.scalastyle'
-
-dependencies {
-  testImplementation (
-    "org.scala-lang:scala-library:%scala-version%",
-    "org.scalatest:scalatest_%%:${scalaTestVersion}",
-    "org.scalatestplus:junit-5-10_%%:3.2.19.1",
-    // "org.mockito:mockito-core:${mockitoVersion}",
-    // "org.scalatestplus:mockito-5-12_%%:${scalaTestPlusMockitoVersion}",
-    "com.vladsch.flexmark:flexmark-profile-pegdown:${flexmarkVersion}"
-  )
-}
-
-
-
-// scalastyle {
-//   failOnWarning = true
-//   config = file("${project.rootDir}/config/scalastyle/scalastyle.xml")
-// }
-
-// check.dependsOn('scalastyleCheck')
-
-
-
 
 dependencies {
   compileOnly (
@@ -99,8 +72,18 @@ dependencies {
     "io.confluent:kafka-avro-serializer:${confluentVersion}",
     "org.slf4j:slf4j-api:${slf4jVersion}",
     "org.slf4j:slf4j-reload4j:${slf4jVersion}",
-   "io.github.embeddedkafka:embedded-kafka-connect_%%:${embeddedKafkaVersion}",
-   "io.github.embeddedkafka:embedded-kafka-schema-registry_%%:${confluentVersion}",
-   "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
+
+    "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+    "org.junit.jupiter:junit-jupiter:${junitVersion}",
+    "org.hamcrest:hamcrest-all:${hamcrestVersion}",
+    "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
+
+    "org.scala-lang:scala-library:%scala-version%",
+    "org.scalatest:scalatest_%%:${scalaTestVersion}",
+    "org.scalatestplus:junit-5-10_%%:${scalaTestPlusVersion}",
+
+    "io.github.embeddedkafka:embedded-kafka-connect_%%:${embeddedKafkaVersion}",
+    "io.github.embeddedkafka:embedded-kafka-schema-registry_%%:${confluentVersion}",
+    "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
   )
 }
