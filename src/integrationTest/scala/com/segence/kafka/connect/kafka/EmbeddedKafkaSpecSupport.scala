@@ -1,14 +1,12 @@
 package com.segence.kafka.connect.kafka
 
-import EmbeddedKafkaSpecSupport.{Available, NotAvailable, ServerStatus}
-
-import java.net.{InetAddress, Socket}
-import org.scalatest.Assertion
+import com.segence.kafka.connect.kafka.EmbeddedKafkaSpecSupport.{Available, NotAvailable, ServerStatus}
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import java.net.{InetAddress, Socket}
 import scala.util.{Failure, Success, Try}
 
 trait EmbeddedKafkaSpecSupport
@@ -19,11 +17,6 @@ trait EmbeddedKafkaSpecSupport
 
   implicit val config: PatienceConfig =
     PatienceConfig(Span(1, Seconds), Span(100, Milliseconds))
-
-  def expectedServerStatus(port: Int, expectedStatus: ServerStatus): Assertion =
-    eventually {
-      status(port) shouldBe expectedStatus
-    }
 
   private def status(port: Int): ServerStatus = {
     Try(new Socket(InetAddress.getByName("localhost"), port)) match {

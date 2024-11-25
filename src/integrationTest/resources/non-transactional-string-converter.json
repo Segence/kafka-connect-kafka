@@ -1,0 +1,17 @@
+{
+  "name": "non-transactional-string-converter",
+  "config": {
+    "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
+    "topics": "upstream_non_txn",
+    "tasks.max": "1",
+    "batch.max.rows": 1,
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "bootstrap.servers": "localhost:6001",
+    "schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schemas.enable": false,
+
+    "sink.topic": "downstream_non_txn",
+    "sink.bootstrap.servers": "localhost:6001"
+  }
+}

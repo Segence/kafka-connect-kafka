@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.segence.kafka.connect.kafka.ConnectorConfiguration.getProducerProperties;
 
@@ -33,13 +34,25 @@ public class KafkaSinkTask extends SinkTask {
     @Override
     public void start(Map<String, String> configuration) {
 
-        producer = new KafkaProducer<>(getProducerProperties(configuration));
-
         topic = configuration.get(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName());
 
         if (configuration.containsKey(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName())
             && configuration.get(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()).equals("true")) {
             exactlyOneSupport = true;
+        }
+
+        var producerProperties = getProducerProperties(configuration);
+
+        if (exactlyOneSupport) {
+            var transactionalId = "kafka-sink-" + UUID.randomUUID();
+            producerProperties.setProperty("transactional.id", transactionalId);
+            log.info("Using producer with transactional id {}", transactionalId);
+        }
+
+        producer = new KafkaProducer<>(producerProperties);
+
+        if (exactlyOneSupport) {
+            producer.initTransactions();
         }
 
         log.info("Successfully started Kafka Sink Task");
