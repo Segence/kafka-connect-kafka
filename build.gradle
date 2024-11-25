@@ -5,8 +5,6 @@ plugins {
   id 'com.adtran.scala-multiversion-plugin' version '2.1.0' apply false
   id 'com.github.maiflai.scalatest' version '0.32' apply false
   id 'org.scoverage' version '8.1' apply false
-  id 'com.github.alisiikh.scalastyle' version '3.5.0' apply false
-  id 'com.gradleup.shadow' version '8.3.5'
   id 'maven-publish'
 }
 
@@ -59,8 +57,13 @@ apply from: 'gradle/it.gradle'
 apply plugin: 'scala'
 apply plugin: 'com.adtran.scala-multiversion-plugin'
 
+jar {
+  archiveFileName = "${rootProject.name}.jar"
+}
+
 dependencies {
   compileOnly (
+    "org.scala-lang:scala-library:%scala-version%",
     "org.apache.kafka:connect-runtime:${kafkaVersion}",
     "io.confluent:kafka-schema-registry-client:${confluentVersion}",
     "io.confluent:kafka-avro-serializer:${confluentVersion}",
@@ -87,3 +90,4 @@ dependencies {
     "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
   )
 }
+

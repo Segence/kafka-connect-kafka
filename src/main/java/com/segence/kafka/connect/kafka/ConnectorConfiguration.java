@@ -60,6 +60,11 @@ class ConnectorConfiguration extends AbstractConfig {
 
         var producerConfigurationEntries = Arrays.stream(
             ConnectorConfigurationEntry.values()
+        ).filter(entry ->
+            !Set.of(
+                ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(),
+                ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()
+            ).contains(entry.getConfigKeyName())
         ).collect(Collectors.toMap(
             ConnectorConfigurationEntry::getConfigKeyName,
             entry -> entry
@@ -72,11 +77,19 @@ class ConnectorConfiguration extends AbstractConfig {
                     ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()
                 ).contains(configurationEntry.getKey())
             ) {
-                if (producerConfigurationEntries.containsKey(configurationEntry.getKey())) {
+                if (
+                    producerConfigurationEntries.containsKey(configurationEntry.getKey()) ||
+                    (configurationEntry.getKey().length() > 5 && configurationEntry.getKey().startsWith("sink."))
+                ) {
                     result.put(configurationEntry.getKey().substring(5), configurationEntry.getValue());
-                } else {
-                    result.put(configurationEntry.getKey(), configurationEntry.getValue());
                 }
+            }
+        }
+
+        for (var producerConfigurationEntry : producerConfigurationEntries.entrySet()) {
+            if (!result.containsKey(producerConfigurationEntry.getKey())) {
+                var maybeDefaultValue = producerConfigurationEntry.getValue().getDefaultValue();
+                maybeDefaultValue.ifPresent(defaultValue -> result.put(producerConfigurationEntry.getKey().substring(5), defaultValue));
             }
         }
 

@@ -1,5 +1,6 @@
 package com.segence.kafka.connect.kafka;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -17,31 +18,24 @@ class ConnectorConfigurationTest {
     }};
 
     private static final Map<String, String> VALID_HIGH_PRIORITY_CONFIGURATION = new HashMap<>(){{
+        put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
-        put(ConnectorConfigurationEntry.KEY_CONVERTER.getConfigKeyName(), "com.converter");
-        put(ConnectorConfigurationEntry.VALUE_CONVERTER.getConfigKeyName(), "com.converter");
-//        put(ConnectorConfigurationEntry.KEY_SERIALIZER_CLASS.getConfigKeyName(), "com.converter");
-//        put(ConnectorConfigurationEntry.VALUE_SERIALIZER_CLASS.getConfigKeyName(), "com.converter");
-//        put(ConnectorConfigurationEntry.BOOTSTRAP_SERVER.getConfigKeyName(), "localhost:9092");
-//        put(ConnectorConfigurationEntry.SSL_TRUSTSTORE_PASSWORD.getConfigKeyName(), "some password");
     }};
 
     private static final Map<String, String> CUSTOM_CONFIGURATION = new HashMap<>(VALID_HIGH_PRIORITY_CONFIGURATION){{
-        put("custom.entry", "custom value");
+        put("invalid.custom.entry", "custom value 1");
+        put("sink.custom.entry", "custom value 2");
     }};
 
     private static final Properties EXPECTED_HIGH_PRIORITY_CONFIGURATION = new Properties(){{
-        put("key.converter", "com.converter");
-        put("value.converter", "com.converter");
-        put("key.serializer", "com.converter");
-        put("value.serializer", "com.converter");
         put("bootstrap.servers", "localhost:9092");
-        put("ssl.truststore.password", "some password");
+        put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
     }};
 
     private static final Properties EXPECTED_CUSTOM_CONFIGURATION = new Properties(){{
         putAll(EXPECTED_HIGH_PRIORITY_CONFIGURATION);
-        put("custom.entry", "custom value");
+        put("custom.entry", "custom value 2");
     }};
 
 

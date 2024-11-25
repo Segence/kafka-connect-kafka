@@ -49,9 +49,7 @@ services:
     ports:
     - "8083:8083"
     volumes:
-    - "${PWD}/autodi-kafka-connect/build/libs/autodi-kafka-connect.jar:/usr/share/confluent-hub-components/autodi-kafka-connect.jar"
-    - "${PWD}/kafka-sink-connector/build/libs/kafka-sink-connector-all.jar:/usr/share/confluent-hub-components/kafka-sink-connector-all.jar"
-    - "./autodi-kafka-connect/src/test/resources:/autodi"
+    - "${PWD}/build/libs/kafka-connect-kafka.jar:/usr/share/confluent-hub-components/kafka-connect-kafka.jar"
     environment:
       CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
