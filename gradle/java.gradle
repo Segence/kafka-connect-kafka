@@ -13,7 +13,11 @@ java {
 }
 
 test {
-  useJUnitPlatform()
+  useJUnitPlatform {
+    testLogging {
+      events("passed", "skipped", "failed")
+    }
+  }
 }
 
 jacoco {

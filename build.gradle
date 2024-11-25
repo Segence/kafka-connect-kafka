@@ -78,7 +78,6 @@ dependencies {
 
     "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
     "org.junit.jupiter:junit-jupiter:${junitVersion}",
-    "org.hamcrest:hamcrest-all:${hamcrestVersion}",
     "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
 
     "org.scala-lang:scala-library:%scala-version%",
