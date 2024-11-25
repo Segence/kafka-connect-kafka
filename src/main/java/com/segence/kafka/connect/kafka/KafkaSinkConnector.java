@@ -14,14 +14,14 @@ import java.util.stream.IntStream;
 
 public class KafkaSinkConnector extends SinkConnector {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaSinkConnector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSinkConnector.class);
 
     private Map<String, String> configuration;
 
     @Override
     public void start(Map<String, String> configuration) {
         this.configuration = configuration;
-        log.info("Starting the Kafka Sink Connector");
+        LOGGER.info("Starting the Kafka Sink Connector");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class KafkaSinkConnector extends SinkConnector {
 
     @Override
     public void stop() {
-        log.info("Stopping the Kafka Sink Connector");
+        LOGGER.info("Stopping the Kafka Sink Connector");
     }
 
     @Override

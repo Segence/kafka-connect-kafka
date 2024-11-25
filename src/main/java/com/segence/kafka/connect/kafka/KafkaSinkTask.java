@@ -20,7 +20,7 @@ import static com.segence.kafka.connect.kafka.ConnectorConfiguration.getProducer
 
 public class KafkaSinkTask extends SinkTask {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaSinkTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSinkTask.class);
 
     private KafkaProducer<Object, Object> producer;
     private String topic;
@@ -46,7 +46,7 @@ public class KafkaSinkTask extends SinkTask {
         if (exactlyOneSupport) {
             var transactionalId = "kafka-sink-" + UUID.randomUUID();
             producerProperties.setProperty("transactional.id", transactionalId);
-            log.info("Using producer with transactional id {}", transactionalId);
+            LOGGER.info("Using producer with transactional id {}", transactionalId);
         }
 
         producer = new KafkaProducer<>(producerProperties);
@@ -55,13 +55,13 @@ public class KafkaSinkTask extends SinkTask {
             producer.initTransactions();
         }
 
-        log.info("Successfully started Kafka Sink Task");
+        LOGGER.info("Successfully started Kafka Sink Task");
     }
 
     @Override
     public void put(Collection<SinkRecord> collection) {
 
-        log.debug("Received " + collection.size() + " records");
+        LOGGER.debug("Received " + collection.size() + " records");
 
         if (exactlyOneSupport) {
             try {
@@ -90,8 +90,8 @@ public class KafkaSinkTask extends SinkTask {
 
     @Override
     public void stop() {
-        log.info("Closing Kafka producer");
+        LOGGER.info("Closing Kafka producer");
         producer.close();
-        log.info("Stopping Kafka Sink Task");
+        LOGGER.info("Stopping Kafka Sink Task");
     }
 }
