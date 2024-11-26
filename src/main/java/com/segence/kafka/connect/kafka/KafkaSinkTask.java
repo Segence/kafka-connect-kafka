@@ -1,5 +1,7 @@
 package com.segence.kafka.connect.kafka;
 
+import com.segence.kafka.connect.kafka.callback.NoOpCallback;
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
@@ -12,6 +14,7 @@ import org.apache.kafka.connect.sink.SinkTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +28,7 @@ public class KafkaSinkTask extends SinkTask {
     private KafkaProducer<Object, Object> producer;
     private String topic;
     private boolean exactlyOneSupport;
+    private Callback callback;
 
     @Override
     public String version() {
@@ -39,6 +43,23 @@ public class KafkaSinkTask extends SinkTask {
         if (configuration.containsKey(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName())
             && configuration.get(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()).equals("true")) {
             exactlyOneSupport = true;
+        }
+
+        if (configuration.containsKey(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName()) &&
+            !configuration.get(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName()).equals(NoOpCallback.CLAZZ)) {
+
+            try {
+                var clazz = getClass().getClassLoader().loadClass(
+                    configuration.get(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName())
+                );
+                callback = (Callback) clazz.getDeclaredConstructor().newInstance();
+                LOGGER.info("Instantiated Callback class: {}", clazz);
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException |
+                     InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            LOGGER.info("No callback class registered");
         }
 
         var producerProperties = getProducerProperties(configuration);
@@ -68,7 +89,7 @@ public class KafkaSinkTask extends SinkTask {
                 producer.beginTransaction();
                 collection.forEach(record -> {
                     var producerRecord = new ProducerRecord<>(topic, record.key(), record.value());
-                    producer.send(producerRecord);
+                    producer.send(producerRecord, callback);
                 });
                 producer.commitTransaction();
             } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
@@ -83,7 +104,7 @@ public class KafkaSinkTask extends SinkTask {
         else {
             collection.forEach(record -> {
                 var producerRecord = new ProducerRecord<>(topic, record.key(), record.value());
-                producer.send(producerRecord); // FIXME support Future or callback
+                producer.send(producerRecord, callback); // FIXME support Future or callback
             });
         }
     }

@@ -12,6 +12,7 @@
     "value.converter.schemas.enable": false,
 
     "sink.topic": "downstream_non_txn",
-    "sink.bootstrap.servers": "localhost:6001"
+    "sink.bootstrap.servers": "localhost:6001",
+    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback"
   }
 }

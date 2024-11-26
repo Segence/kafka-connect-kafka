@@ -39,6 +39,12 @@ class ConnectorConfiguration extends AbstractConfig {
             (a, b) -> b
         );
 
+    static final Set<String> NON_KAFKA_PRODUCER_CONFIGURATION = Set.of(
+        ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(),
+        ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName(),
+        ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName()
+    );
+
     ConnectorConfiguration(ConfigDef definition, Map<?, ?> originals, Map<String, ?> configProviderProps, boolean doLog) {
         super(definition, originals, configProviderProps, doLog);
     }
@@ -61,22 +67,14 @@ class ConnectorConfiguration extends AbstractConfig {
         var producerConfigurationEntries = Arrays.stream(
             ConnectorConfigurationEntry.values()
         ).filter(entry ->
-            !Set.of(
-                ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(),
-                ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()
-            ).contains(entry.getConfigKeyName())
+            !NON_KAFKA_PRODUCER_CONFIGURATION.contains(entry.getConfigKeyName())
         ).collect(Collectors.toMap(
             ConnectorConfigurationEntry::getConfigKeyName,
             entry -> entry
         ));
 
         for (var configurationEntry : configuration.entrySet()) {
-            if (
-                !Set.of(
-                    ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(),
-                    ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()
-                ).contains(configurationEntry.getKey())
-            ) {
+            if (!NON_KAFKA_PRODUCER_CONFIGURATION.contains(configurationEntry.getKey())) {
                 if (
                     producerConfigurationEntries.containsKey(configurationEntry.getKey()) ||
                     (configurationEntry.getKey().length() > 5 && configurationEntry.getKey().startsWith("sink."))
