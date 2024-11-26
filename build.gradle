@@ -31,26 +31,6 @@ tasks.withType(Copy).all {
   duplicatesStrategy 'exclude'
 }
 
-//  dependencyCheck {
-//    nvd {
-//      apiKey = System.getenv("NVD_API_KEY")
-//    }
-//  }
-
-// publishing {
-//   repositories {
-//     maven {
-//       url = project.hasProperty('publishRepository') && publishRepository == 'release' ? publishReleaseRepositoryUrl : publishSnapshotRepositoryUrl
-//       credentials {
-//         username System.getenv("AZURE_DEVOPS_FEED_USER")
-//         password System.getenv("AZURE_DEVOPS_FEED_PASSWORD")
-//       }
-//     }
-//   }
-// }
-
-
-
 apply from: 'gradle/java.gradle'
 apply from: 'gradle/it.gradle'
 
