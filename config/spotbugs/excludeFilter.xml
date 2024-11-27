@@ -1,5 +1,8 @@
 <FindBugsFilter>
-    <Match>
-        <Class name="com.segence.commons.kafka.streams.DeadLetterQueueExceptionHandler" />
-    </Match>
+  <Match>
+    <Class name="com.segence.kafka.connect.kafka.KafkaConnectorSpec"/>
+  </Match>
+  <Match>
+    <Class name="com.segence.kafka.connect.kafka.HttpStub$"/>
+  </Match>
 </FindBugsFilter>
