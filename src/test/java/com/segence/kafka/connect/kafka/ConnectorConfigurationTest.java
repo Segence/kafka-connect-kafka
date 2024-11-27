@@ -33,6 +33,13 @@ class ConnectorConfigurationTest {
         put("sink.custom.entry", "custom value 2");
     }};
 
+    private static final Map<String, String> ALL_CONFIGURATION = new HashMap<>() {{
+        put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
+        put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
+        put(ConnectorConfigurationEntry.KEY_SERIALIZER_CLASS.getConfigKeyName(), "org.apache.kafka.common.serialization.StringSerializer");
+        put(ConnectorConfigurationEntry.VALUE_SERIALIZER_CLASS.getConfigKeyName(), "org.apache.kafka.common.serialization.StringSerializer");
+    }};
+
     private static final Properties EXPECTED_HIGH_PRIORITY_CONFIGURATION = new Properties() {{
         put("bootstrap.servers", "localhost:9092");
         put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
@@ -42,6 +49,12 @@ class ConnectorConfigurationTest {
     private static final Properties EXPECTED_CUSTOM_CONFIGURATION = new Properties() {{
         putAll(EXPECTED_HIGH_PRIORITY_CONFIGURATION);
         put("custom.entry", "custom value 2");
+    }};
+
+    private static final Properties EXPECTED_ALL_CONFIGURATION = new Properties() {{
+        put("bootstrap.servers", "localhost:9092");
+        put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
     }};
     // CHECKSTYLE:ON: checkstyle: NeedBraces
 
@@ -70,5 +83,11 @@ class ConnectorConfigurationTest {
     public void shouldSupportCustomConfiguration() {
         final var result = getProducerProperties(CUSTOM_CONFIGURATION);
         assertEquals(EXPECTED_CUSTOM_CONFIGURATION, result);
+    }
+
+    @Test
+    public void shouldNotAddProducerConfigurationWhenAllDefined() {
+        final var result = getProducerProperties(ALL_CONFIGURATION);
+        assertEquals(EXPECTED_ALL_CONFIGURATION, result);
     }
 }

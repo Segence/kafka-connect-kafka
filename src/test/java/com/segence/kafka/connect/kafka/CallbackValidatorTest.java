@@ -1,5 +1,8 @@
 package com.segence.kafka.connect.kafka;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.kafka.common.config.ConfigException;
@@ -37,7 +40,30 @@ class CallbackValidatorTest {
     }
 
     @Test
+    public void validationShouldFailWhenClassImplementsNoInterfaces() {
+        assertThrows(
+            ConfigException.class,
+            () -> UNDER_TEST.ensureValid("", com.segence.kafka.connect.kafka.stubs.NoInterface.class),
+            "Expecting ensureValid() to throw an exception"
+        );
+    }
+
+    @Test
+    public void validationShouldFailWhenClassImplementsInvalidInterface() {
+        assertThrows(
+            ConfigException.class,
+            () -> UNDER_TEST.ensureValid("", com.segence.kafka.connect.kafka.stubs.InvalidInterface.class),
+            "Expecting ensureValid() to throw an exception"
+        );
+    }
+
+    @Test
     public void validationShouldSucceedWhenClassFound() {
         UNDER_TEST.ensureValid("", com.segence.kafka.connect.kafka.stubs.TestCallback.class);
+    }
+
+    @Test
+    public void stringRepresentationShouldBeCorrect() {
+        assertThat(UNDER_TEST.toString(), is(equalTo("Kafka Producer callback validator")));
     }
 }

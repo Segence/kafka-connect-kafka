@@ -10,7 +10,9 @@ public final class CallbackValidator implements ConfigDef.Validator {
 
     private static final String REQUIRED_INTERFACE = Callback.class.getCanonicalName();
     private static final String NOT_A_CLASS_MESSAGE = "Not a class";
-    private static final String NOT_IMPLEMENTING = NOT_A_CLASS_MESSAGE + " implementing " + REQUIRED_INTERFACE;
+
+    private static final String NOT_IMPLEMENTING_MESSAGE =
+        NOT_A_CLASS_MESSAGE + " implementing " + REQUIRED_INTERFACE;
 
     public CallbackValidator() {
     }
@@ -29,17 +31,17 @@ public final class CallbackValidator implements ConfigDef.Validator {
         final var interfaces = clazz.getInterfaces();
 
         if (interfaces.length < 1) {
-            throw new ConfigException(name, value, NOT_IMPLEMENTING);
+            throw new ConfigException(name, value, NOT_IMPLEMENTING_MESSAGE);
         }
 
         if (
             Arrays.stream(interfaces).noneMatch(entry -> entry.getCanonicalName().equals(REQUIRED_INTERFACE))
         ) {
-            throw new ConfigException(name, value, NOT_IMPLEMENTING);
+            throw new ConfigException(name, value, NOT_IMPLEMENTING_MESSAGE);
         }
     }
 
     public String toString() {
-        return "Kafka Producer callback";
+        return "Kafka Producer callback validator";
     }
 }

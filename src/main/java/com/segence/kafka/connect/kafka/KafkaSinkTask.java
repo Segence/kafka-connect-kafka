@@ -106,7 +106,7 @@ public class KafkaSinkTask extends SinkTask {
         } else {
             collection.forEach(record -> {
                 final var producerRecord = new ProducerRecord<>(topic, record.key(), record.value());
-                producer.send(producerRecord, callback); // FIXME support Future or callback
+                producer.send(producerRecord, callback);
             });
         }
     }

@@ -36,7 +36,7 @@ class ConnectorConfiguration extends AbstractConfig {
                     configEntry.getImportance(),
                     configEntry.getDescription());
             },
-            (a, b) -> b
+            (ignore, configDef) -> configDef
         );
 
     static final Set<String> NON_KAFKA_PRODUCER_CONFIGURATION = Set.of(
@@ -94,7 +94,7 @@ class ConnectorConfiguration extends AbstractConfig {
         }
 
         for (var producerConfigurationEntry : producerConfigurationEntries.entrySet()) {
-            if (!result.containsKey(producerConfigurationEntry.getKey())) {
+            if (!result.containsKey(producerConfigurationEntry.getKey().substring(CONFIGURATION_PREFIX_LENGTH))) {
                 final var maybeDefaultValue = producerConfigurationEntry.getValue().getDefaultValue();
                 maybeDefaultValue.ifPresent(defaultValue ->
                     result.put(producerConfigurationEntry.getKey().substring(CONFIGURATION_PREFIX_LENGTH), defaultValue)
