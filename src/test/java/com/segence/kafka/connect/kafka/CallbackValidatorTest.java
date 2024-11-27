@@ -1,9 +1,9 @@
 package com.segence.kafka.connect.kafka;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.apache.kafka.common.config.ConfigException;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CallbackValidatorTest {
 
