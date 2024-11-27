@@ -24,6 +24,10 @@ dependencies:
 unit-test:
 	@./gradlew clean unitTest
 
+.PHONY: unit-test-publish-report # Runs unit tests and publishes report
+unit-test-publish-report:
+	@./gradlew clean unitTest coveralls
+
 .PHONY: integration-test # Runs integration tests
 integration-test:
 	@./gradlew clean integrationTest

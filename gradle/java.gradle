@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle'
+apply plugin: 'com.github.kt3k.coveralls'
 
 java {
   sourceCompatibility = JavaVersion.VERSION_17
@@ -39,7 +40,17 @@ spotbugs {
  excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
 }
 
-jacocoTestReport.mustRunAfter test
+jacocoTestReport {
+  mustRunAfter test
+  reports {
+    xml.required = true
+    html.required = true
+  }
+}
+
+coveralls {
+  jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
+}
 
 tasks.register('unitTest') {
   dependsOn('test')
