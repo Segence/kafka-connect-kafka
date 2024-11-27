@@ -3,10 +3,12 @@ package com.segence.kafka.connect.kafka;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.AuthorizationException;
@@ -26,8 +28,47 @@ public class KafkaSinkTask extends SinkTask {
 
     private KafkaProducer<Object, Object> producer;
     private String topic;
-    private boolean exactlyOneSupport;
+    private boolean exactlyOnceSupport;
     private Callback callback;
+
+    /**
+     * Returns the Kafka topic set
+     *
+     * @return Kafkat topic name
+     */
+    protected String getTopic() {
+        return topic;
+    }
+
+    private void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    /**
+     * Whether exactly once delivery (transactions) is used
+     *
+     * @return A boolean indicating whether exactly once delivery is used
+     */
+    protected boolean isExactlyOnceSupport() {
+        return exactlyOnceSupport;
+    }
+
+    private void setExactlyOnceSupport(boolean exactlyOnceSupport) {
+        this.exactlyOnceSupport = exactlyOnceSupport;
+    }
+
+    /**
+     * The Kafka Producer callback instance registered
+     *
+     * @return An instance of {@link org.apache.kafka.clients.producer} or null
+     */
+    protected Callback getCallback() {
+        return callback;
+    }
+
+    private void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     public String version() {
@@ -37,11 +78,15 @@ public class KafkaSinkTask extends SinkTask {
     @Override
     public void start(Map<String, String> configuration) {
 
-        topic = configuration.get(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName());
+        if (!configuration.containsKey(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName())) {
+            throw new IllegalArgumentException("No sink topic configured");
+        }
+
+        setTopic(configuration.get(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName()));
 
         if (configuration.containsKey(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName())
             && configuration.get(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()).equals("true")) {
-            exactlyOneSupport = true;
+            exactlyOnceSupport = true;
         }
 
         if (
@@ -59,7 +104,7 @@ public class KafkaSinkTask extends SinkTask {
                 LOGGER.info("Instantiated Callback class: {}", clazz);
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
                      | InstantiationException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         } else {
             LOGGER.info("No callback class registered");
@@ -67,15 +112,25 @@ public class KafkaSinkTask extends SinkTask {
 
         final var producerProperties = ConnectorConfiguration.getProducerProperties(configuration);
 
-        if (exactlyOneSupport) {
+        if (exactlyOnceSupport) {
             final var transactionalId = "kafka-sink-" + UUID.randomUUID();
-            producerProperties.setProperty("transactional.id", transactionalId);
+            producerProperties.setProperty(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionalId);
             LOGGER.info("Using producer with transactional id {}", transactionalId);
         }
 
+        initProducer(producerProperties);
+    }
+
+    /**
+     * Initialization of the Kafka Producer.
+     * Useful to override this method for testing.
+     *
+     * @param producerProperties An instance of {@link java.util.Properties}
+     */
+    protected void initProducer(Properties producerProperties) {
         producer = new KafkaProducer<>(producerProperties);
 
-        if (exactlyOneSupport) {
+        if (exactlyOnceSupport) {
             producer.initTransactions();
         }
 
@@ -87,7 +142,7 @@ public class KafkaSinkTask extends SinkTask {
 
         LOGGER.debug("Received {} records", collection.size());
 
-        if (exactlyOneSupport) {
+        if (exactlyOnceSupport) {
             try {
                 producer.beginTransaction();
                 collection.forEach(record -> {
