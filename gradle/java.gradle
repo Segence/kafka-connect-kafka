@@ -1,8 +1,7 @@
 apply plugin: 'java'
-//apply plugin: 'com.github.spotbugs'
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'jacoco'
-//apply plugin: 'checkstyle'
-
+apply plugin: 'checkstyle'
 
 java {
   sourceCompatibility = JavaVersion.VERSION_17
@@ -30,15 +29,15 @@ jacocoTestReport {
   }
 }
 
-//checkstyle {
-//  configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
-//  toolVersion = '10.17.0'
-//}
-//
-//spotbugs {
-//  toolVersion = "${spotbugsVersion}"
-//  excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
-//}
+checkstyle {
+ configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+ toolVersion = "${checkstyleVersion}"
+}
+
+spotbugs {
+ toolVersion = "${spotbugsVersion}"
+ excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
+}
 
 jacocoTestReport.mustRunAfter test
 

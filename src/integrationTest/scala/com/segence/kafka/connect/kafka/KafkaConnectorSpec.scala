@@ -7,7 +7,7 @@ import io.github.embeddedkafka.schemaregistry.EmbeddedKafkaConfig
 import java.nio.file.Files
 import scala.util.{Failure, Success}
 
-class ExampleKafkaConnectSpec extends EmbeddedKafkaSpecSupport {
+class KafkaConnectorSpec extends EmbeddedKafkaSpecSupport {
 
   implicit val kafkaConfig: EmbeddedKafkaConfig = EmbeddedKafkaConfig()
 

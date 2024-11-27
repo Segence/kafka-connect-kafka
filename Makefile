@@ -9,12 +9,6 @@ ifneq (,$(findstring dev,$(VERSION)))
 	PUBLISH_REPOSITORY := snapshot
 endif
 
-GRADLE_OPTIONS :=
-
-ifdef project
-	GRADLE_OPTIONS := $(GRADLE_OPTIONS) -p $(project)
-endif
-
 all:
 	@echo "Use a specific goal. To list all goals, type 'make help'"
 
@@ -24,23 +18,23 @@ version:
 
 .PHONY: dependencies # Lists project dependencies
 dependencies:
-	@./gradlew clean dependencies $(GRADLE_OPTIONS)
+	@./gradlew clean dependencies
 
 .PHONY: unit-test # Runs unit tests
 unit-test:
-	@./gradlew clean unitTest $(GRADLE_OPTIONS)
+	@./gradlew clean unitTest
 
 .PHONY: integration-test # Runs integration tests
 integration-test:
-	@./gradlew clean integrationTest $(GRADLE_OPTIONS)
+	@./gradlew clean integrationTest
 
 .PHONY: build # Builds artifacts
 build:
-	@./gradlew clean build $(GRADLE_OPTIONS)
+	@./gradlew clean build
 
 .PHONY: static-analysis # Analyzes the build
 static-analysis:
-	@./gradlew clean check $(GRADLE_OPTIONS)
+	@./gradlew clean check
 
 .PHONY: security-analysis # Runs security analysis looking for vulnerabilities in code
 security-analysis:
@@ -48,11 +42,11 @@ security-analysis:
 
 .PHONY: publish-local # Publishes artifacts locally
 publish-local:
-	@./gradlew clean publishToMavenLocal -PallScalaVersions -Pversion=$(VERSION) $(GRADLE_OPTIONS)
+	@./gradlew clean publishToMavenLocal -PallScalaVersions -Pversion=$(VERSION)
 
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean publish -PallScalaVersions -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY) $(GRADLE_OPTIONS)
+	@./gradlew clean publish -PallScalaVersions -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
 
 .PHONY: help # Generate list of goals with descriptions
 help:
