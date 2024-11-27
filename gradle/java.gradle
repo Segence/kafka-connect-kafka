@@ -31,7 +31,7 @@ jacocoTestReport {
 
 checkstyle {
  configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
- toolVersion = '10.17.0'
+ toolVersion = "${checkstyleVersion}"
 }
 
 spotbugs {
