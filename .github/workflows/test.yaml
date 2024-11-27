@@ -22,11 +22,13 @@ jobs:
     - name: Unit testing
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN}}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: make unit-test-publish-report
     - name: Integration testing
       run: make integration-test
     - name: Static Analysis
       run: make static-analysis
     - name: Security Analysis
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: make security-analysis
