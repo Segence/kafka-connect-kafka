@@ -64,6 +64,8 @@ dependencies {
     "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
     "org.junit.jupiter:junit-jupiter:${junitVersion}",
     "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
+    "org.mockito:mockito-core:${mockitoVersion}",
+    "org.mockito:mockito-junit-jupiter:${mockitoVersion}",
 
     "org.scala-lang:scala-library:%scala-version%",
     "org.scalatest:scalatest_%%:${scalaTestVersion}",

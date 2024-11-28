@@ -40,10 +40,6 @@ public class KafkaSinkTask extends SinkTask {
         return topic;
     }
 
-    private void setTopic(String topic) {
-        this.topic = topic;
-    }
-
     /**
      * Whether exactly once delivery (transactions) is used
      *
@@ -51,10 +47,6 @@ public class KafkaSinkTask extends SinkTask {
      */
     protected boolean isExactlyOnceSupport() {
         return exactlyOnceSupport;
-    }
-
-    private void setExactlyOnceSupport(boolean exactlyOnceSupport) {
-        this.exactlyOnceSupport = exactlyOnceSupport;
     }
 
     /**
@@ -66,8 +58,13 @@ public class KafkaSinkTask extends SinkTask {
         return callback;
     }
 
-    private void setCallback(Callback callback) {
-        this.callback = callback;
+    /**
+     * Sets the Kafka Producer
+     *
+     * @param kafkaProducer The Kafka Producer instance
+     */
+    protected void setProducer(KafkaProducer<Object, Object> kafkaProducer) {
+        producer = kafkaProducer;
     }
 
     @Override
@@ -82,7 +79,7 @@ public class KafkaSinkTask extends SinkTask {
             throw new IllegalArgumentException("No sink topic configured");
         }
 
-        setTopic(configuration.get(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName()));
+        topic = configuration.get(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName());
 
         if (configuration.containsKey(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName())
             && configuration.get(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()).equals("true")) {
@@ -128,7 +125,7 @@ public class KafkaSinkTask extends SinkTask {
      * @param producerProperties An instance of {@link java.util.Properties}
      */
     protected void initProducer(Properties producerProperties) {
-        producer = new KafkaProducer<>(producerProperties);
+        setProducer(new KafkaProducer<>(producerProperties));
 
         if (exactlyOnceSupport) {
             producer.initTransactions();
