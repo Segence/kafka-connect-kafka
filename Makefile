@@ -5,8 +5,12 @@ FONT_NC := ${FONT_ESC}[0m # No colour
 PUBLISH_REPOSITORY := release
 VERSION := $(shell git describe --tags --match 'v*' --abbrev=0 | cut -c2-)
 
+ifeq (true,$(prerelease))
+	PUBLISH_REPOSITORY := snapshot
+else
 ifneq (,$(findstring dev,$(VERSION)))
 	PUBLISH_REPOSITORY := snapshot
+endif
 endif
 
 all:
@@ -50,7 +54,7 @@ publish-local:
 
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean publish -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
+	@echo ./gradlew clean publish -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
 
 .PHONY: help # Generate list of goals with descriptions
 help:
