@@ -46,11 +46,11 @@ security-analysis:
 
 .PHONY: publish-local # Publishes artifacts locally
 publish-local:
-	@./gradlew clean publishToMavenLocal -PallScalaVersions -Pversion=$(VERSION)
+	@./gradlew clean publishToMavenLocal -Pversion=$(VERSION)
 
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean publish -PallScalaVersions -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
+	@./gradlew clean publish -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
 
 .PHONY: help # Generate list of goals with descriptions
 help:

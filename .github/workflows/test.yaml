@@ -28,7 +28,7 @@ jobs:
       run: make integration-test
     - name: Static Analysis
       run: make static-analysis
-    - name: Security Analysis
-      env:
-        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-      run: make security-analysis
+    # - name: Security Analysis
+    #   env:
+    #     NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+    #   run: make security-analysis

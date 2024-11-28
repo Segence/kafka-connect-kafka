@@ -7,9 +7,10 @@ plugins {
   id 'org.scoverage' version '8.1' apply false
   id 'com.github.kt3k.coveralls' version '2.12.2'
   id 'maven-publish'
+  id 'signing'
 }
 
-//apply plugin: 'maven-publish'
+apply plugin: 'maven-publish'
 apply plugin: 'org.owasp.dependencycheck'
 
 group = 'com.segence.kafka.connect'
@@ -34,21 +35,62 @@ tasks.withType(Copy).all {
 
 dependencyCheck {
   nvd.apiKey = System.getenv("NVD_API_KEY")
+  nvd.datafeedUrl = "https://mirror.cveb.in/nvd/json/cve/1.1/nvdcve-1.1-{0}.json.gz"
 }
 
 apply from: 'gradle/java.gradle'
 apply from: 'gradle/it.gradle'
 
-apply plugin: 'scala'
-apply plugin: 'com.adtran.scala-multiversion-plugin'
+if (project.gradle.startParameter.taskNames.contains('integrationTest')) {
+  apply from: 'gradle/scala.gradle'
+}
 
-jar {
-  archiveFileName = "${rootProject.name}.jar"
+publishing {
+  publications {
+    maven(MavenPublication) {
+      pom {
+        name = 'Kafka Connect Kafka connector'
+        description = 'A connector with a Kafka sink.'
+        url = 'https://github.com/Segence/kafka-connect-kafka'
+        licenses {
+          license {
+            name = 'The Apache License, Version 2.0'
+            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+        developers {
+          developer {
+            id = 'robvadai'
+            name = 'Rob Vadai'
+            email = 'rvadai@segence.com'
+          }
+        }
+        scm {
+          url = 'https://github.com/Segence/kafka-connect-kafka'
+        }
+      }
+    }
+  }
+  repositories {
+    maven {
+      url = project.hasProperty('publishRepository') && publishRepository == 'release' ? publishReleaseRepositoryUrl : publishSnapshotRepositoryUrl
+      credentials {
+        username System.getenv("OSSRH_USER")
+        password System.getenv("OSSRH_PASSWORD")
+      }
+    }
+  }
+}
+
+signing {
+  def signingKey = findProperty("signingKey")
+  def signingPassword = findProperty("signingPassword")
+  useInMemoryPgpKeys(signingKey, signingPassword)
+  sign publishing.publications.mavenJava
 }
 
 dependencies {
   compileOnly (
-    "org.scala-lang:scala-library:%scala-version%",
     "org.apache.kafka:connect-runtime:${kafkaVersion}",
     "io.confluent:kafka-schema-registry-client:${confluentVersion}",
     "io.confluent:kafka-avro-serializer:${confluentVersion}",
@@ -65,15 +107,7 @@ dependencies {
     "org.junit.jupiter:junit-jupiter:${junitVersion}",
     "org.junit.platform:junit-platform-runner:${junitPlatformVersion}",
     "org.mockito:mockito-core:${mockitoVersion}",
-    "org.mockito:mockito-junit-jupiter:${mockitoVersion}",
-
-    "org.scala-lang:scala-library:%scala-version%",
-    "org.scalatest:scalatest_%%:${scalaTestVersion}",
-    "org.scalatestplus:junit-5-10_%%:${scalaTestPlusVersion}",
-
-    "io.github.embeddedkafka:embedded-kafka-connect_%%:${embeddedKafkaVersion}",
-    "io.github.embeddedkafka:embedded-kafka-schema-registry_%%:${confluentVersion}",
-    "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
+    "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
   )
 }
 
