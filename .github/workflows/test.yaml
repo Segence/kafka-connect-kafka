@@ -28,6 +28,13 @@ jobs:
       run: make integration-test
     - name: Static Analysis
       run: make static-analysis
+    - name: Publish
+      env:
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USER }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
+      run: make publish
     # - name: Security Analysis
     #   env:
     #     NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
