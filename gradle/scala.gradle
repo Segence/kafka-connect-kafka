@@ -9,7 +9,6 @@ dependencies {
     "org.scala-lang:scala-library:%scala-version%",
     "org.scalatest:scalatest_%%:${scalaTestVersion}",
     "org.scalatestplus:junit-5-10_%%:${scalaTestPlusVersion}",
-
     "io.github.embeddedkafka:embedded-kafka-connect_%%:${embeddedKafkaVersion}",
     "io.github.embeddedkafka:embedded-kafka-schema-registry_%%:${confluentVersion}",
     "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"

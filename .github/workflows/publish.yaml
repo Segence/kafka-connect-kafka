@@ -17,8 +17,8 @@ jobs:
         java-version: '17'
     - name: Publish
       env:
-        ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
-        ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
-        OSSRH_USER: ${{ secrets.OSSRH_USER }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-      run: gmake publish prerelease=${{ github.event.release.prerelease }}
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USER }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
+      run: make publish
