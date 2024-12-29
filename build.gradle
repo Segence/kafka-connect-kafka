@@ -33,7 +33,7 @@ tasks.withType(Copy).all {
 }
 
 tasks.named('publishMavenJavaPublicationToMavenCentralRepository') {
-    dependsOn('signMavenPublication')
+  dependsOn('signMavenPublication')
 }
 
 dependencyCheck {
