@@ -2,16 +2,7 @@ FONT_ESC := $(shell printf '\033')
 FONT_BOLD := ${FONT_ESC}[1m
 FONT_NC := ${FONT_ESC}[0m # No colour
 
-PUBLISH_REPOSITORY := release
 VERSION := $(shell git describe --tags --match 'v*' --abbrev=0 | cut -c2-)
-
-ifeq (true,$(prerelease))
-	PUBLISH_REPOSITORY := snapshot
-else
-ifneq (,$(findstring dev,$(VERSION)))
-	PUBLISH_REPOSITORY := snapshot
-endif
-endif
 
 all:
 	@echo "Use a specific goal. To list all goals, type 'make help'"
@@ -48,13 +39,13 @@ static-analysis:
 security-analysis:
 	@./gradlew clean dependencyCheckAnalyze
 
-.PHONY: publish-local # Publishes artifacts locally
-publish-local:
-	@./gradlew clean publishToMavenLocal -Pversion=$(VERSION)
+# .PHONY: publish-local # Publishes artifacts locally
+# publish-local:
+# 	@./gradlew clean publishToMavenLocal -Pversion=$(VERSION)
 
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean publish -Pversion=$(VERSION) -PpublishRepository=$(PUBLISH_REPOSITORY)
+	@./gradlew clean publishToMavenCentral -Pversion=$(VERSION)
 
 .PHONY: help # Generate list of goals with descriptions
 help:
