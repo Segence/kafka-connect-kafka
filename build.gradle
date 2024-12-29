@@ -10,7 +10,6 @@ plugins {
   id 'signing'
 }
 
-apply plugin: 'maven-publish'
 apply plugin: 'org.owasp.dependencycheck'
 
 group = 'com.segence.kafka.connect'
