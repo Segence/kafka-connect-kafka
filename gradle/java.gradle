@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle'
