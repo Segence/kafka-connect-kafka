@@ -7,7 +7,6 @@ plugins {
   id 'org.scoverage' version '8.1' apply false
   id 'com.github.kt3k.coveralls' version '2.12.2'
   id "com.vanniktech.maven.publish" version '0.30.0'
-  id 'signing'
 }
 
 apply plugin: 'org.owasp.dependencycheck'
@@ -32,10 +31,6 @@ tasks.withType(Copy).all {
   duplicatesStrategy 'exclude'
 }
 
-tasks.named('publishMavenJavaPublicationToMavenCentralRepository') {
-  dependsOn('signMavenPublication')
-}
-
 dependencyCheck {
   nvd.apiKey = System.getenv("NVD_API_KEY")
   nvd.datafeedUrl = "https://mirror.cveb.in/nvd/json/cve/1.1/nvdcve-1.1-{0}.json.gz"
@@ -46,40 +41,6 @@ apply from: 'gradle/it.gradle'
 
 if (project.gradle.startParameter.taskNames.contains('integrationTest')) {
   apply from: 'gradle/scala.gradle'
-}
-
-mavenPublishing {
-  coordinates(project.group, project.name, version)
-
-  pom {
-    name = 'Kafka Connect Kafka connector'
-    description = 'A connector with a Kafka sink.'
-    inceptionYear = "2024"
-    url = 'https://github.com/Segence/kafka-connect-kafka'
-    licenses {
-      license {
-        name = 'The Apache License, Version 2.0'
-        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-      }
-    }
-    developers {
-      developer {
-        id = 'robvadai'
-        name = 'Rob Vadai'
-        email = 'rvadai@segence.com'
-      }
-    }
-    scm {
-      url = 'https://github.com/Segence/kafka-connect-kafka'
-    }
-  }
-}
-
-signing {
-  def signingKey = findProperty("signingInMemoryKey")
-  def signingPassword = findProperty("signingInMemoryKeyPassword")
-  useInMemoryPgpKeys(signingKey, signingPassword)
-  sign publishing.publications.mavenJava
 }
 
 dependencies {
