@@ -54,6 +54,11 @@ tasks.register('unitTest') {
   dependsOn('jacocoTestReport')
 }
 
+java {
+  withSourcesJar()
+  withJavadocJar()
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
