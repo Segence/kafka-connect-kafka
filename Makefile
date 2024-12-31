@@ -45,8 +45,7 @@ security-analysis:
 
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean signMavenPublication
-	@./gradlew publishMavenJavaPublicationToMavenCentralRepository -Pversion=0.1.0
+	@./gradlew clean signMavenPublication -Pversion=0.1.0
 	@./gradlew publishMavenPublicationToMavenCentralRepository -Pversion=0.1.0
 
 
