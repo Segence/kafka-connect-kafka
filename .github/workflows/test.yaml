@@ -19,22 +19,15 @@ jobs:
       with:
         distribution: temurin
         java-version: ${{ matrix.java-version }}
-    # - name: Unit testing
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-    #   run: make unit-test-publish-report
-    # - name: Integration testing
-    #   run: make integration-test
-    # - name: Static Analysis
-    #   run: make static-analysis
-    - name: Publish
+    - name: Unit testing
       env:
-        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
-        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
-        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USER }}
-        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
-      run: make publish
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: make unit-test-publish-report
+    - name: Integration testing
+      run: make integration-test
+    - name: Static Analysis
+      run: make static-analysis
     # - name: Security Analysis
     #   env:
     #     NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
