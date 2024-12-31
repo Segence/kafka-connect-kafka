@@ -39,13 +39,10 @@ static-analysis:
 security-analysis:
 	@./gradlew clean dependencyCheckAnalyze
 
-# .PHONY: publish-local # Publishes artifacts locally
-# publish-local:
-# 	@./gradlew clean publishToMavenLocal -Pversion=$(VERSION)
-
 .PHONY: publish # Publishes artifacts to the configured remote repository
 publish:
-	@./gradlew clean publishToMavenCentral -Pversion=$(VERSION)
+	@./gradlew clean signMavenPublication -Pversion=$(VERSION)
+	@./gradlew publishMavenPublicationToMavenCentralRepository -Pversion=$(VERSION)
 
 .PHONY: help # Generate list of goals with descriptions
 help:
