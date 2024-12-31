@@ -52,7 +52,7 @@ public class KafkaSinkTask extends SinkTask {
     /**
      * The Kafka Producer callback instance registered
      *
-     * @return An instance of {@link org.apache.kafka.clients.producer} or null
+     * @return An instance of {@link org.apache.kafka.clients.producer.Callback} or null
      */
     protected Callback getCallback() {
         return callback;
