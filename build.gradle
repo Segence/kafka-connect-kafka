@@ -61,4 +61,3 @@ dependencies {
     "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
   )
 }
-
