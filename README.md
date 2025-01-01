@@ -3,6 +3,7 @@ Kafka Connect Kafka connector
 
 ![Workflow Status](https://github.com/segence/kafka-connect-kafka/actions/workflows/test.yaml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/Segence/kafka-connect-kafka/badge.svg?branch=main)](https://coveralls.io/github/Segence/kafka-connect-kafka?branch=main)
+![Sonatype Nexus (Repository)](https://img.shields.io/maven-central/v/com.segence.kafka.connect/kafka-connect-kafka)
 
 ## Summary
 
