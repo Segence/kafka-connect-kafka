@@ -26,3 +26,12 @@ This connector helps with that use case.
 | `sink.exactly.once.support` | Whether to enable exactly-once support for source connectors in the cluster by using transactions to write source records and their source offsets, and by proactively fencing out old task generations before bringing up new ones.                                                                                                                                                                                                                                                                                                       | false                                                  |
 | `sink.callback`             | The callback that is registered on the Kafka Producer. Must be a class implementing <code>org.apache.kafka.clients.producer.Callback</code> and it must be accessible on the CLASSPATH.                                                                                                                                                                                                                                                                                                                                                    | *(none)*                                               |
 
+## Example configurations
+
+- [Non-transactional Kafka producer with producer callback class](src/integrationTest/resources/non-transactional-string-converter.json)
+- [Transactional producer](src/integrationTest/resources/transactional-string-converter.json)
+
+## Running locally
+
+`make build`
+`docker compose up -d`
