@@ -12,6 +12,8 @@
 
     "sink.topic": "downstream_non_txn",
     "sink.bootstrap.servers": "localhost:6001",
-    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback"
+    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback",
+    "sink.key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "sink.value.converter": "org.apache.kafka.connect.storage.StringConverter"
   }
 }

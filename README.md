@@ -59,12 +59,12 @@ This connector helps with that use case.
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter.schema.registry.url": "http://schema-registry:8081",
 
-
-
     "sink.topic": "downstream-avro",
     "sink.bootstrap.servers": "PLAINTEXT://broker:29092",
     "sink.key.converter": "io.confluent.connect.avro.AvroConverter",
-    "sink.value.converter": "io.confluent.connect.avro.AvroConverter"
+    "sink.value.converter": "io.confluent.connect.avro.AvroConverter",
+    "sink.key.converter.schema.registry.url": "http://schema-registry:8081",
+    "sink.value.converter.schema.registry.url": "http://schema-registry:8081"
   }
 }
 ```
