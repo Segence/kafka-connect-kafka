@@ -15,6 +15,19 @@ Because there are use cases to use Kafka Connect for Kafka-to-Kafka traffic whil
 
 This connector helps with that use case.
 
+## Installation
+
+1. Download the JAR file containing the connector from:
+`https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/`
+
+    e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.4/kafka-connect-kafka-0.1.0-dev.4.jar`
+
+2. Copy it under the CLASSPATH so that Kafka Connect can load the plugin.
+
+    e.g. copy it under the path `/usr/share/confluent-hub-components`
+
+    Additional help: [Install a connector manually](https://docs.confluent.io/platform/current/connect/install.html#install-a-connector-manually) from Confluent.
+
 ## Configuration
 
 | **Name**                    | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | **Default value**                                      |
@@ -30,8 +43,37 @@ This connector helps with that use case.
 
 - [Non-transactional Kafka producer with producer callback class](src/integrationTest/resources/non-transactional-string-converter.json)
 - [Transactional producer](src/integrationTest/resources/transactional-string-converter.json)
+- Example configuration using Avro serializers and Schema Registry:
 
-## Running locally
+```json
+{
+  "name": "non-transactional-string-converter",
+  "config": {
+    "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
+    "topics": "upstream_non_txn",
+    "tasks.max": "1",
+    "batch.max.rows": 1,
+    "bootstrap.servers": "localhost:6001",
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
 
-`make build`
-`docker compose up -d`
+    "sink.topic": "downstream_non_txn",
+    "sink.bootstrap.servers": "localhost:6001",
+    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback"
+  }
+}
+```
+
+## Building and running locally
+
+### Requirements
+
+- JDK 1.7
+- GNU Make
+
+### Building and running
+
+- `make build`
+- `docker compose up -d`
