@@ -17,18 +17,17 @@ class KafkaSinkConnectorTest {
 
     @Test
     void shouldGetTaskClass() {
-        var result = underTest.taskClass();
-        assertEquals(KafkaSinkTask.class, result);
+        assertEquals(KafkaSinkTask.class, underTest.taskClass());
     }
 
     @Test
     void shouldGetEmptyTaskConfigurationsWhenStartNotCalled() {
 
-        var expectation = new ArrayList<Map<String, String>>();
+        final var expectation = new ArrayList<Map<String, String>>();
         expectation.add(null);
         expectation.add(null);
 
-        var result = underTest.taskConfigs(2);
+        final var result = underTest.taskConfigs(2);
 
         assertEquals(expectation, result);
     }
@@ -36,10 +35,10 @@ class KafkaSinkConnectorTest {
     @Test
     void shouldGetTaskConfigurationsWhenStartCalled() {
 
-        var expectation = List.of(EMPTY_MAP, EMPTY_MAP);
+        final var expectation = List.of(EMPTY_MAP, EMPTY_MAP);
 
         underTest.start(EMPTY_MAP);
-        var result = underTest.taskConfigs(2);
+        final var result = underTest.taskConfigs(2);
 
         assertEquals(expectation, result);
     }
