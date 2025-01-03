@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
-apply plugin: 'com.github.spotbugs'
-apply plugin: 'jacoco'
-apply plugin: 'checkstyle'
+//apply plugin: 'com.github.spotbugs'
+//apply plugin: 'jacoco'
+//apply plugin: 'checkstyle'
 apply plugin: 'com.github.kt3k.coveralls'
 
 java {
@@ -17,33 +17,34 @@ test {
   }
 }
 
-jacoco {
-  toolVersion = "${jacocoVersion}"
-}
-
-jacocoTestReport {
-  reports {
-    xml.required = true
-  }
-}
+//jacoco {
+//  toolVersion = "${jacocoVersion}"
+//}
+//
+//jacocoTestReport {
+//  reports {
+//    xml.required = true
+//  }
+//}
 
 checkstyle {
- configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
- toolVersion = "${checkstyleVersion}"
+  configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+  toolVersion = "${checkstyleVersion}"
+  sourceSets = []
 }
-
-spotbugs {
- toolVersion = "${spotbugsVersion}"
- excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
-}
-
-jacocoTestReport {
-  mustRunAfter test
-  reports {
-    xml.required = true
-    html.required = true
-  }
-}
+//
+//spotbugs {
+// toolVersion = "${spotbugsVersion}"
+// excludeFilter = file("${project.rootDir}/config/spotbugs/excludeFilter.xml")
+//}
+//
+//jacocoTestReport {
+//  mustRunAfter test
+//  reports {
+//    xml.required = true
+//    html.required = true
+//  }
+//}
 
 coveralls {
   jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'

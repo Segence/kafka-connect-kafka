@@ -1,11 +1,9 @@
 package com.segence.kafka.connect.kafka;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
+import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -14,8 +12,10 @@ import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.kafka.common.errors.OutOfOrderSequenceException;
 import org.apache.kafka.common.errors.ProducerFencedException;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
+import org.apache.kafka.connect.storage.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +25,12 @@ public class KafkaSinkTask extends SinkTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSinkTask.class);
 
-    private KafkaProducer<Object, Object> producer;
+    private KafkaProducer<byte[], byte[]> producer;
     private String topic;
     private boolean exactlyOnceSupport;
     private Callback callback;
+    private Converter keyConverter;
+    private Converter valueConverter;
 
     /**
      * Returns the Kafka topic set
@@ -62,7 +64,7 @@ public class KafkaSinkTask extends SinkTask {
      *
      * @param kafkaProducer The Kafka Producer instance
      */
-    protected void setProducer(KafkaProducer<Object, Object> kafkaProducer) {
+    protected void setProducer(KafkaProducer<byte[], byte[]> kafkaProducer) {
         producer = kafkaProducer;
     }
 
@@ -83,6 +85,32 @@ public class KafkaSinkTask extends SinkTask {
         if (configuration.containsKey(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName())
             && configuration.get(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName()).equals("true")) {
             exactlyOnceSupport = true;
+        }
+
+        try {
+            final var clazz = getClass().getClassLoader().loadClass(
+                configuration.get(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName())
+            );
+            keyConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
+            keyConverter.configure(ConnectorConfiguration.getKeyConverterProperties(configuration), true);
+
+            LOGGER.debug("Instantiated Key Converter class: {}", clazz);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+                 | InstantiationException | InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        try {
+            final var clazz = getClass().getClassLoader().loadClass(
+                configuration.get(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName())
+            );
+            valueConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
+            valueConverter.configure(ConnectorConfiguration.getKeyConverterProperties(configuration), false);
+
+            LOGGER.debug("Instantiated Value Converter class: {}", clazz);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+                 | InstantiationException | InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
         }
 
         if (
@@ -124,6 +152,10 @@ public class KafkaSinkTask extends SinkTask {
      * @param producerProperties An instance of {@link java.util.Properties}
      */
     protected void initProducer(Properties producerProperties) {
+
+        producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName());
+        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName());
+
         setProducer(new KafkaProducer<>(producerProperties));
 
         if (exactlyOnceSupport) {
@@ -131,6 +163,12 @@ public class KafkaSinkTask extends SinkTask {
         }
 
         LOGGER.info("Successfully started Kafka Sink Task");
+    }
+
+    private static ProducerRecord<byte[], byte[]> buildProducerRecord(SinkRecord sinkRecord, String topic, Converter keyConverter, Converter valueConverter) {
+        var convertedKey = keyConverter.fromConnectData(topic, sinkRecord.keySchema(), sinkRecord.key());
+        var convertedValue = valueConverter.fromConnectData(topic, sinkRecord.valueSchema(), sinkRecord.value());
+        return new ProducerRecord<>(topic, convertedKey, convertedValue);
     }
 
     @Override
@@ -142,8 +180,7 @@ public class KafkaSinkTask extends SinkTask {
             try {
                 producer.beginTransaction();
                 collection.forEach(record -> {
-                    final var producerRecord = new ProducerRecord<>(topic, record.key(), record.value());
-                    producer.send(producerRecord, callback);
+                    producer.send(buildProducerRecord(record, topic, keyConverter, valueConverter), callback);
                 });
                 producer.commitTransaction();
             } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
@@ -156,8 +193,7 @@ public class KafkaSinkTask extends SinkTask {
             }
         } else {
             collection.forEach(record -> {
-                final var producerRecord = new ProducerRecord<>(topic, record.key(), record.value());
-                producer.send(producerRecord, callback);
+                producer.send(buildProducerRecord(record, topic, keyConverter, valueConverter), callback);
             });
         }
     }

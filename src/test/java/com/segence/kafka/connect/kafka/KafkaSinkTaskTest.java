@@ -45,10 +45,10 @@ class KafkaSinkTaskTest {
     private SinkRecord sinkRecord2;
 
     @Mock
-    private KafkaProducer<Object, Object> mockProducer;
+    private KafkaProducer<byte[], byte[]> mockProducer;
 
     @Captor
-    private ArgumentCaptor<ProducerRecord<Object, Object>> producerRecordCaptor;
+    private ArgumentCaptor<ProducerRecord<byte[], byte[]>> producerRecordCaptor;
 
     @Captor
     private ArgumentCaptor<Callback> callbackCaptor;
@@ -64,24 +64,32 @@ class KafkaSinkTaskTest {
     private static final Map<String, String> CONFIGURATION_HAVING_BOOTSTRAP_SERVERS_AND_TOPIC = new HashMap<>() {{
         put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final Map<String, String> CONFIGURATION_HAVING_EXACTLY_ONCE_SUPPORT_TURNED_OFF = new HashMap<>() {{
         put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
         put(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName(), "false");
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final Map<String, String> CONFIGURATION_HAVING_EXACTLY_ONCE_SUPPORT_TURNED_ON = new HashMap<>() {{
         put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
         put(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName(), "true");
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final Map<String, String> CONFIGURATION_HAVING_NO_OP_CALLBACK = new HashMap<>() {{
         put(ConnectorConfigurationEntry.BOOTSTRAP_SERVERS.getConfigKeyName(), "localhost:9092");
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
         put(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName(), NoOpCallback.CLAZZ);
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final Map<String, String> CONFIGURATION_HAVING_NON_EXISTENT_CALLBACK = new HashMap<>() {{
@@ -89,6 +97,8 @@ class KafkaSinkTaskTest {
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
         put(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName(),
             "com.segence.kafka.connect.kafka.stubs.NonExistent");
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final Map<String, String> CONFIGURATION_HAVING_VALID_CALLBACK = new HashMap<>() {{
@@ -96,6 +106,8 @@ class KafkaSinkTaskTest {
         put(ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(), "test-topic");
         put(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName(),
             "com.segence.kafka.connect.kafka.stubs.TestCallback");
+        put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+        put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
     }};
 
     private static final
@@ -106,6 +118,8 @@ class KafkaSinkTaskTest {
                 put(ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName(), "true");
                 put(ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName(),
                     "com.segence.kafka.connect.kafka.stubs.TestCallback");
+                put(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
+                put(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName(), "org.apache.kafka.connect.storage.StringConverter");
             }};
     // CHECKSTYLE:ON: checkstyle: NeedBraces
 
@@ -175,10 +189,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1"));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1"));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2"));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2"));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
     }
 
     @Test
@@ -200,10 +214,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1"));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1"));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2"));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2"));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
 
         assertThat(capturedCallbacks.size(), is(2));
 
@@ -231,10 +245,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1"));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1"));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2"));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2"));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
     }
 
     @Test
@@ -258,10 +272,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1"));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1"));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2"));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2"));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
 
         assertThat(capturedCallbacks.size(), is(2));
 

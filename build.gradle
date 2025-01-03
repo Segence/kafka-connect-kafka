@@ -45,13 +45,13 @@ dependencies {
   api (
     "org.apache.kafka:connect-runtime:${kafkaVersion}",
     "io.confluent:kafka-schema-registry-client:${confluentVersion}",
-    "io.confluent:kafka-avro-serializer:${confluentVersion}",
+    "io.confluent:kafka-connect-avro-converter:${confluentVersion}",
     "org.slf4j:slf4j-api:${slf4jVersion}",
   )
   testImplementation (
     "org.apache.kafka:connect-runtime:${kafkaVersion}",
     "io.confluent:kafka-schema-registry-client:${confluentVersion}",
-    "io.confluent:kafka-avro-serializer:${confluentVersion}",
+    "io.confluent:kafka-connect-avro-converter:${confluentVersion}",
     "org.slf4j:slf4j-api:${slf4jVersion}",
     "org.slf4j:slf4j-reload4j:${slf4jVersion}",
     "org.junit.jupiter:junit-jupiter-api:${junitVersion}",

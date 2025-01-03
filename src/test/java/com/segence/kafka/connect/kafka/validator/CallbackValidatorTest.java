@@ -1,4 +1,4 @@
-package com.segence.kafka.connect.kafka;
+package com.segence.kafka.connect.kafka.validator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

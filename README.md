@@ -47,21 +47,24 @@ This connector helps with that use case.
 
 ```json
 {
-  "name": "non-transactional-string-converter",
+  "name": "avro-producer",
   "config": {
     "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
-    "topics": "upstream_non_txn",
+    "topics": "upstream-avro",
     "tasks.max": "1",
     "batch.max.rows": 1,
-    "bootstrap.servers": "localhost:6001",
+    "bootstrap.servers": "PLAINTEXT://broker:29092",
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "key.converter.schema.registry.url": "http://schema-registry:8081",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter.schema.registry.url": "http://schema-registry:8081",
 
-    "sink.topic": "downstream_non_txn",
-    "sink.bootstrap.servers": "localhost:6001",
-    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback"
+
+
+    "sink.topic": "downstream-avro",
+    "sink.bootstrap.servers": "PLAINTEXT://broker:29092",
+    "sink.key.converter": "io.confluent.connect.avro.AvroConverter",
+    "sink.value.converter": "io.confluent.connect.avro.AvroConverter"
   }
 }
 ```
@@ -77,3 +80,8 @@ This connector helps with that use case.
 
 - `make build`
 - `docker compose up -d`
+- Create topics:
+    ```sh
+    docker exec -it broker kafka-topics --create --bootstrap-server localhost:9092 --topic upstream-avro
+    docker exec -it broker kafka-topics --create --bootstrap-server localhost:9092 --topic downstream-avro
+    ```

@@ -1,9 +1,6 @@
 package com.segence.kafka.connect.kafka;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.kafka.common.config.AbstractConfig;
@@ -42,14 +39,46 @@ class ConnectorConfiguration extends AbstractConfig {
     static final Set<String> NON_KAFKA_PRODUCER_CONFIGURATION = Set.of(
         ConnectorConfigurationEntry.SINK_TOPIC.getConfigKeyName(),
         ConnectorConfigurationEntry.EXACTLY_ONCE_SUPPORT.getConfigKeyName(),
-        ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName()
+        ConnectorConfigurationEntry.CALLBACK_CLASS.getConfigKeyName(),
+        ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName(),
+        ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName()
     );
+
+    static final String KEY_CONVERTER_PREFIX = ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName();
+    static final String VALUE_CONVERTER_PREFIX = ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName();
 
     private final static int CONFIGURATION_PREFIX_LENGTH = 5;
 
     ConnectorConfiguration(ConfigDef definition, Map<?, ?> originals,
                            Map<String, ?> configProviderProps, boolean doLog) {
         super(definition, originals, configProviderProps, doLog);
+    }
+
+    private static Map<String, String> getPropertiesHavingPrefix(Map<String, String> configuration, String prefix) {
+        final Map<String, String> result = new HashMap<>();
+
+        for (var configurationEntry : configuration.entrySet()) {
+            if (
+                !configurationEntry.getKey().equals(prefix) &&
+                configurationEntry.getKey().startsWith(prefix) &&
+                configurationEntry.getKey().length() > prefix.length() + 2
+            ) {
+                result.put(
+                    configurationEntry.getKey().substring(prefix.length() + 1),
+                    configurationEntry.getValue()
+                );
+            }
+        }
+
+        return result;
+    }
+
+    static Map<String, String> getKeyConverterProperties(Map<String, String> configuration) {
+        return getPropertiesHavingPrefix(configuration, KEY_CONVERTER_PREFIX);
+    }
+
+    static Map<String, String> getValueConverterProperties(Map<String, String> configuration) {
+        return getPropertiesHavingPrefix(configuration, VALUE_CONVERTER_PREFIX);
     }
 
     // CHECKSTYLE:OFF: checkstyle: NeedBraces
@@ -82,8 +111,9 @@ class ConnectorConfiguration extends AbstractConfig {
         for (var configurationEntry : configuration.entrySet()) {
             if (!NON_KAFKA_PRODUCER_CONFIGURATION.contains(configurationEntry.getKey())) {
                 if (
-                    producerConfigurationEntries.containsKey(configurationEntry.getKey())
-                    || configurationEntry.getKey().startsWith("sink.")
+                    configurationEntry.getKey().startsWith("sink.") &&
+                    !configurationEntry.getKey().startsWith(KEY_CONVERTER_PREFIX) &&
+                    !configurationEntry.getKey().startsWith(VALUE_CONVERTER_PREFIX)
                 ) {
                     result.put(
                         configurationEntry.getKey().substring(CONFIGURATION_PREFIX_LENGTH),
