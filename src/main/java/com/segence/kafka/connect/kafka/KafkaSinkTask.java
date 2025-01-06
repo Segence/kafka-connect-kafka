@@ -1,9 +1,13 @@
 package com.segence.kafka.connect.kafka;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -24,6 +28,7 @@ import com.segence.kafka.connect.kafka.callback.NoOpCallback;
 public class KafkaSinkTask extends SinkTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSinkTask.class);
+    private static final String BYTE_ARRAY_SERIALIZER_CANONICAL_NAME = ByteArraySerializer.class.getCanonicalName();
 
     private KafkaProducer<byte[], byte[]> producer;
     private String topic;
@@ -93,7 +98,6 @@ public class KafkaSinkTask extends SinkTask {
             );
             keyConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
             keyConverter.configure(ConnectorConfiguration.getKeyConverterProperties(configuration), true);
-
             LOGGER.debug("Instantiated Key Converter class: {}", clazz);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
                  | InstantiationException | InvocationTargetException e) {
@@ -105,8 +109,7 @@ public class KafkaSinkTask extends SinkTask {
                 configuration.get(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName())
             );
             valueConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
-            valueConverter.configure(ConnectorConfiguration.getKeyConverterProperties(configuration), false);
-
+            valueConverter.configure(ConnectorConfiguration.getValueConverterProperties(configuration), false);
             LOGGER.debug("Instantiated Value Converter class: {}", clazz);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
                  | InstantiationException | InvocationTargetException e) {
@@ -153,8 +156,8 @@ public class KafkaSinkTask extends SinkTask {
      */
     protected void initProducer(Properties producerProperties) {
 
-        producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName());
-        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getCanonicalName());
+        producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
+        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
 
         setProducer(new KafkaProducer<>(producerProperties));
 
