@@ -35,6 +35,13 @@ public class KafkaSinkTask extends SinkTask {
     private Converter keyConverter;
     private Converter valueConverter;
 
+    private Converter instantiateConverter(Map<String, String> configuration, ConnectorConfigurationEntry configKeyName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        final var clazz = getClass().getClassLoader().loadClass(
+            configuration.get(configKeyName.getConfigKeyName())
+        );
+        return (Converter) clazz.getDeclaredConstructor().newInstance();
+    }
+
     /**
      * Returns the Kafka topic set
      *
@@ -91,24 +98,18 @@ public class KafkaSinkTask extends SinkTask {
         }
 
         try {
-            final var clazz = getClass().getClassLoader().loadClass(
-                configuration.get(ConnectorConfigurationEntry.KEY_CONVERTER_CLASS.getConfigKeyName())
-            );
-            keyConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
+            keyConverter = instantiateConverter(configuration, ConnectorConfigurationEntry.KEY_CONVERTER_CLASS);
             keyConverter.configure(ConnectorConfiguration.getKeyConverterProperties(configuration), true);
-            LOGGER.debug("Instantiated Key Converter class: {}", clazz);
+            LOGGER.debug("Instantiated Key Converter class: {}", keyConverter.getClass().getCanonicalName());
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
                  | InstantiationException | InvocationTargetException e) {
             throw new IllegalArgumentException(e);
         }
 
         try {
-            final var clazz = getClass().getClassLoader().loadClass(
-                configuration.get(ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS.getConfigKeyName())
-            );
-            valueConverter = (Converter) clazz.getDeclaredConstructor().newInstance();
+            valueConverter = instantiateConverter(configuration, ConnectorConfigurationEntry.VALUE_CONVERTER_CLASS);
             valueConverter.configure(ConnectorConfiguration.getValueConverterProperties(configuration), false);
-            LOGGER.debug("Instantiated Value Converter class: {}", clazz);
+            LOGGER.debug("Instantiated Value Converter class: {}", valueConverter.getClass().getCanonicalName());
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
                  | InstantiationException | InvocationTargetException e) {
             throw new IllegalArgumentException(e);

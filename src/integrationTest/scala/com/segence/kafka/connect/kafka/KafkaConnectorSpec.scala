@@ -6,6 +6,8 @@ import io.confluent.kafka.serializers.{AbstractKafkaSchemaSerDeConfig, KafkaAvro
 import io.github.embeddedkafka.schemaregistry.connect.EmbeddedKafkaConnect._
 import io.github.embeddedkafka.schemaregistry.EmbeddedKafkaConfig
 import org.apache.kafka.common.serialization.{Deserializer, Serializer}
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.matchers.should.Matchers._
 
 import java.nio.file.Files
 import scala.jdk.CollectionConverters._
@@ -13,7 +15,7 @@ import scala.util.{Failure, Success}
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class KafkaConnectorSpec extends EmbeddedKafkaSpecSupport {
+class KafkaConnectorSpec extends AnyWordSpecLike {
 
   implicit val kafkaConfig: EmbeddedKafkaConfig = EmbeddedKafkaConfig(
     schemaRegistryPort = 6002
