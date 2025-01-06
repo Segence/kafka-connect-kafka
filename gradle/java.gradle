@@ -9,6 +9,14 @@ java {
   targetCompatibility = JavaVersion.VERSION_17
 }
 
+jar {
+  manifest {
+    attributes(
+      'Implementation-Version': version
+    )
+  }
+}
+
 test {
   useJUnitPlatform {
     testLogging {
