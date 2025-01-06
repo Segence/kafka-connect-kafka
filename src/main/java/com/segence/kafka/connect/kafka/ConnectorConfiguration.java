@@ -63,9 +63,9 @@ class ConnectorConfiguration extends AbstractConfig {
 
         for (var configurationEntry : configuration.entrySet()) {
             if (
-                !configurationEntry.getKey().equals(prefix) &&
-                configurationEntry.getKey().startsWith(prefix) &&
-                configurationEntry.getKey().length() > prefix.length() + 2
+                !configurationEntry.getKey().equals(prefix)
+                && configurationEntry.getKey().startsWith(prefix)
+                && configurationEntry.getKey().length() > prefix.length() + 2
             ) {
                 result.put(
                     configurationEntry.getKey().substring(prefix.length() + 1),

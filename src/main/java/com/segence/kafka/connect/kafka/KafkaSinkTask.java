@@ -35,7 +35,11 @@ public class KafkaSinkTask extends SinkTask {
     private Converter keyConverter;
     private Converter valueConverter;
 
-    private Converter instantiateConverter(Map<String, String> configuration, ConnectorConfigurationEntry configKeyName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private Converter instantiateConverter(Map<String, String> configuration,
+                                           ConnectorConfigurationEntry configKeyName)
+        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+
         final var clazz = getClass().getClassLoader().loadClass(
             configuration.get(configKeyName.getConfigKeyName())
         );
@@ -155,8 +159,10 @@ public class KafkaSinkTask extends SinkTask {
      */
     protected void initProducer(Properties producerProperties) {
 
-        producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
-        producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
+        producerProperties.setProperty(
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
+        producerProperties.setProperty(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BYTE_ARRAY_SERIALIZER_CANONICAL_NAME);
 
         setProducer(new KafkaProducer<>(producerProperties));
 
@@ -167,9 +173,13 @@ public class KafkaSinkTask extends SinkTask {
         LOGGER.info("Successfully started Kafka Sink Task");
     }
 
-    private static ProducerRecord<byte[], byte[]> buildProducerRecord(SinkRecord sinkRecord, String topic, Converter keyConverter, Converter valueConverter) {
-        var convertedKey = keyConverter.fromConnectData(topic, sinkRecord.keySchema(), sinkRecord.key());
-        var convertedValue = valueConverter.fromConnectData(topic, sinkRecord.valueSchema(), sinkRecord.value());
+    private static ProducerRecord<byte[], byte[]> buildProducerRecord(SinkRecord sinkRecord,
+                                                                      String topic,
+                                                                      Converter keyConverter,
+                                                                      Converter valueConverter) {
+
+        final var convertedKey = keyConverter.fromConnectData(topic, sinkRecord.keySchema(), sinkRecord.key());
+        final var convertedValue = valueConverter.fromConnectData(topic, sinkRecord.valueSchema(), sinkRecord.value());
         return new ProducerRecord<>(topic, convertedKey, convertedValue);
     }
 

@@ -5,6 +5,7 @@
  */
 package com.segence.kafka.connect.kafka.schema;
 
+// CHECKSTYLE:OFF: checkstyle:
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
@@ -388,3 +389,4 @@ public class TestMessageValue extends org.apache.avro.specific.SpecificRecordBas
         }
     }
 }
+// CHECKSTYLE:ON: checkstyle:

@@ -2,18 +2,17 @@ package com.segence.kafka.connect.kafka;
 
 import java.util.Optional;
 
-import com.segence.kafka.connect.kafka.validator.CallbackValidator;
-import com.segence.kafka.connect.kafka.validator.ConverterValidator;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
 import org.apache.kafka.connect.runtime.WorkerConfig;
+import org.apache.kafka.connect.storage.StringConverter;
 import org.apache.kafka.connect.transforms.util.NonEmptyListValidator;
 
-import org.apache.kafka.connect.storage.StringConverter;
-
 import com.segence.kafka.connect.kafka.callback.NoOpCallback;
+import com.segence.kafka.connect.kafka.validator.CallbackValidator;
+import com.segence.kafka.connect.kafka.validator.ConverterValidator;
 
 enum ConnectorConfigurationEntry {
 
