@@ -21,7 +21,7 @@ This connector helps with that use case.
 
    Use the version of your choice.
 
-   e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.6/kafka-connect-kafka-0.1.0-dev.6.jar`
+   e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.8/kafka-connect-kafka-0.1.0-dev.8.jar`
 
 2. Copy it under the CLASSPATH of the Kafka Connect installation so that the plugin can be loaded.
 
@@ -72,4 +72,44 @@ Example: to produce Avro messages using Confluent Schema Registry, use the follo
     ```sh
     docker exec -it broker kafka-topics --create --bootstrap-server localhost:9092 --topic upstream-avro
     docker exec -it broker kafka-topics --create --bootstrap-server localhost:9092 --topic downstream-avro
+    ```
+- Submit the a connector configuration:
+    ```shell
+    curl --header "Content-Type: application/json" \
+    --request POST --data-binary @- \
+    http://localhost:8083/connectors <<EOF
+    {
+      "name": "avro-converter",
+      "config": {
+        "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
+        "bootstrap.servers": "PLAINTEXT://broker:29092",
+        "topics": "upstream-avro",
+        "tasks.max": "1",
+        "batch.max.rows": 1,
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "sink.bootstrap.servers": "PLAINTEXT://broker:29092",
+        "sink.topic": "downstream-avro",
+        "sink.key.converter": "io.confluent.connect.avro.AvroConverter",
+        "sink.value.converter": "io.confluent.connect.avro.AvroConverter",
+        "sink.key.converter.schema.registry.url": "http://schema-registry:8081",
+        "sink.value.converter.schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+    EOF
+    ```
+- Send Avro message:
+    ```shell
+    docker compose exec -it schema-registry bash
+
+    echo '{"f1":"mykey"},{"f2":"myvalue"}' | kafka-avro-console-producer \
+    --broker-list PLAINTEXT://broker:29092 \
+    --topic upstream-avro \
+    --property schema.registry.url=http://localhost:8081 \
+    --property key.schema='{"type":"record","name":"mykey","fields":[{"name":"f1","type":"string"}]}' \
+    --property value.schema='{"type":"record","name":"myvalue","fields":[{"name":"f2","type":"string"}]}' \
+    --property parse.key=true \
+    --property key.separator=,
     ```
