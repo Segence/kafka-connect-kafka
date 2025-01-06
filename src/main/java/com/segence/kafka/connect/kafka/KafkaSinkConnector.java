@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.common.utils.AppInfoParser;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
 import org.slf4j.Logger;
@@ -47,6 +46,6 @@ public class KafkaSinkConnector extends SinkConnector {
 
     @Override
     public String version() {
-        return AppInfoParser.getVersion();
+        return getClass().getPackage().getImplementationVersion();
     }
 }

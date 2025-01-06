@@ -28,8 +28,8 @@ jacocoTestReport {
 }
 
 checkstyle {
- configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
- toolVersion = "${checkstyleVersion}"
+  configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+  toolVersion = "${checkstyleVersion}"
 }
 
 spotbugs {

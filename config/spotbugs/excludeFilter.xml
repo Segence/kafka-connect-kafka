@@ -8,4 +8,10 @@
     <Match>
         <Class name="com.segence.kafka.connect.kafka.stubs.EnhancedKafkaSinkTask"/>
     </Match>
+    <Match>
+        <Class name="com.segence.kafka.connect.kafka.schema.TestMessageKey"/>
+    </Match>
+    <Match>
+        <Class name="com.segence.kafka.connect.kafka.schema.TestMessageValue"/>
+    </Match>
 </FindBugsFilter>
