@@ -1,6 +1,10 @@
 package com.segence.kafka.connect.kafka;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.kafka.common.config.AbstractConfig;

@@ -1,6 +1,8 @@
 package com.segence.kafka.connect.kafka;
 
-import static com.segence.kafka.connect.kafka.ConnectorConfiguration.*;
+import static com.segence.kafka.connect.kafka.ConnectorConfiguration.getKeyConverterProperties;
+import static com.segence.kafka.connect.kafka.ConnectorConfiguration.getProducerProperties;
+import static com.segence.kafka.connect.kafka.ConnectorConfiguration.getValueConverterProperties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

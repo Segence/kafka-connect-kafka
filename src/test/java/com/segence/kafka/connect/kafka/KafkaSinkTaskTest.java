@@ -14,6 +14,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,10 +190,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes(Charset.defaultCharset())));
     }
 
     @Test
@@ -214,10 +215,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes(Charset.defaultCharset())));
 
         assertThat(capturedCallbacks.size(), is(2));
 
@@ -245,10 +246,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes(Charset.defaultCharset())));
     }
 
     @Test
@@ -272,10 +273,10 @@ class KafkaSinkTaskTest {
 
         assertThat(capturedProducerRecords.size(), is(2));
 
-        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes()));
-        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes()));
-        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes()));
-        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes()));
+        assertThat(capturedProducerRecords.get(0).key(), is("key1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(0).value(), is("value1".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).key(), is("key2".getBytes(Charset.defaultCharset())));
+        assertThat(capturedProducerRecords.get(1).value(), is("value2".getBytes(Charset.defaultCharset())));
 
         assertThat(capturedCallbacks.size(), is(2));
 
