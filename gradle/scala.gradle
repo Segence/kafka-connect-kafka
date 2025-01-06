@@ -14,3 +14,7 @@ dependencies {
     "com.softwaremill.sttp.client3:core_%%:${sttpVersion}"
   )
 }
+
+tasks.withType(Test) {
+  testLogging.showStandardStreams = true
+}

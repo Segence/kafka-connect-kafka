@@ -9,9 +9,9 @@ import com.segence.kafka.connect.kafka.KafkaSinkTask;
 
 public final class EnhancedKafkaSinkTask extends KafkaSinkTask {
 
-    private final KafkaProducer<Object, Object> testProducer;
+    private final KafkaProducer<byte[], byte[]> testProducer;
 
-    public EnhancedKafkaSinkTask(KafkaProducer<Object, Object> kafkaProducer) {
+    public EnhancedKafkaSinkTask(KafkaProducer<byte[], byte[]> kafkaProducer) {
         this.testProducer = kafkaProducer;
     }
 

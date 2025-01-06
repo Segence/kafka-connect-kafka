@@ -1,21 +1,15 @@
-package com.segence.kafka.connect.kafka;
+package com.segence.kafka.connect.kafka.validator;
 
 import java.util.Arrays;
 
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 
-public final class CallbackValidator implements ConfigDef.Validator {
+abstract class SubClassValidator implements ConfigDef.Validator {
 
-    private static final String REQUIRED_INTERFACE = Callback.class.getCanonicalName();
     private static final String NOT_A_CLASS_MESSAGE = "Not a class";
 
-    private static final String NOT_IMPLEMENTING_MESSAGE =
-        NOT_A_CLASS_MESSAGE + " implementing " + REQUIRED_INTERFACE;
-
-    public CallbackValidator() {
-    }
+    protected abstract String getRequiredInterface();
 
     @Override
     public void ensureValid(String name, Object value) {
@@ -28,16 +22,19 @@ public final class CallbackValidator implements ConfigDef.Validator {
             throw new ConfigException(name, value, NOT_A_CLASS_MESSAGE);
         }
 
+        final var requiredInterface = getRequiredInterface();
+        final var notImplementingMessage = NOT_A_CLASS_MESSAGE + " implementing " + requiredInterface;
+
         final var interfaces = clazz.getInterfaces();
 
         if (interfaces.length < 1) {
-            throw new ConfigException(name, value, NOT_IMPLEMENTING_MESSAGE);
+            throw new ConfigException(name, value, notImplementingMessage);
         }
 
         if (
-            Arrays.stream(interfaces).noneMatch(entry -> entry.getCanonicalName().equals(REQUIRED_INTERFACE))
+            Arrays.stream(interfaces).noneMatch(entry -> entry.getCanonicalName().equals(requiredInterface))
         ) {
-            throw new ConfigException(name, value, NOT_IMPLEMENTING_MESSAGE);
+            throw new ConfigException(name, value, notImplementingMessage);
         }
     }
 

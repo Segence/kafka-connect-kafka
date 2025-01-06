@@ -1,0 +1,22 @@
+{
+  "name": "non-transactional-avro-converter",
+  "config": {
+    "connector.class": "com.segence.kafka.connect.kafka.KafkaSinkConnector",
+    "topics": "upstream_non_txn_avro",
+    "tasks.max": "1",
+    "batch.max.rows": 1,
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://localhost:6002",
+    "value.converter.schema.registry.url": "http://localhost:6002",
+    "bootstrap.servers": "localhost:6001",
+
+    "sink.topic": "downstream_non_txn_avro",
+    "sink.bootstrap.servers": "localhost:6001",
+    "sink.callback": "com.segence.kafka.connect.kafka.callback.LoggingCallback",
+    "sink.key.converter": "io.confluent.connect.avro.AvroConverter",
+    "sink.value.converter": "io.confluent.connect.avro.AvroConverter",
+    "sink.key.converter.schema.registry.url": "http://localhost:6002",
+    "sink.value.converter.schema.registry.url": "http://localhost:6002"
+  }
+}
