@@ -21,7 +21,7 @@ This connector helps with that use case.
 
    Use the version of your choice.
 
-   e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.4/kafka-connect-kafka-0.1.0-dev.4.jar`
+   e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.6/kafka-connect-kafka-0.1.0-dev.6.jar`
 
 2. Copy it under the CLASSPATH of the Kafka Connect installation so that the plugin can be loaded.
 
