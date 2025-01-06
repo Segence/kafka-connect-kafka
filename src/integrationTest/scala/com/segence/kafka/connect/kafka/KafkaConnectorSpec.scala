@@ -23,8 +23,8 @@ class KafkaConnectorSpec extends AnyWordSpecLike {
 
   private val ConnectPort = 6003
 
-  "The Kafka connector" should {
-    "produce a message with non-transactional delivery" in {
+  "The Kafka sink connector" should {
+    "produce a valid message" in {
 
       implicit val testMessageKeySerializer: Serializer[TestMessageKey] = {
         val props = Map(
