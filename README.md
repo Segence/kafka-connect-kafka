@@ -17,12 +17,13 @@ This connector helps with that use case.
 
 ## Installation
 
-1. Download the JAR file containing the connector from:
-`https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/`
+1. Download the JAR file containing the connector from the [Maven repository location](https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka).
 
-    e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.4/kafka-connect-kafka-0.1.0-dev.4.jar`
+   Use the version of your choice.
 
-2. Copy it under the CLASSPATH so that Kafka Connect can load the plugin.
+   e.g. `curl -O https://repo1.maven.org/maven2/com/segence/kafka/connect/kafka-connect-kafka/0.1.0-dev.4/kafka-connect-kafka-0.1.0-dev.4.jar`
+
+2. Copy it under the CLASSPATH of the Kafka Connect installation so that the plugin can be loaded.
 
     e.g. copy it under the path `/usr/share/confluent-hub-components`
 
